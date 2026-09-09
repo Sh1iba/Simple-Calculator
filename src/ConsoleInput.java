@@ -3,8 +3,8 @@ import java.util.regex.Pattern;
 
 public class ConsoleInput {
     private final Scanner scanner = new Scanner(System.in);
-    private final Pattern OPERAND_PATTERN = Pattern.compile("\\d+");
-    private final Pattern OPERATOR_PATTERN = Pattern.compile(("^[-+*/]$"));
+    private final Pattern OPERAND_PATTERN = Pattern.compile("^-?\\d+(\\.\\d+)?$");
+    private final Pattern OPERATOR_PATTERN = Pattern.compile(("^[-+*/cCsS]$"));
 
     public double readOperand() {
         while (true) {
@@ -12,18 +12,18 @@ public class ConsoleInput {
             if (isNumber(operand)) {
                 return Double.parseDouble(operand);
             } else {
-                printOperandInputErrorBanner();
+                System.err.println("Введите корректное число");
             }
         }
     }
 
-    public double readOperator() {
+    public char readOperator() {
         while (true) {
-            String operator = scanner.nextLine();
-            if (isOperator(operator)) {
-                return Double.parseDouble(operator);
+            String operator = scanner.nextLine().toUpperCase();
+            if (isOperator(operator) && operator.length() == 1) {
+                return operator.charAt(0);
             } else {
-                printOperatorInputErrorBanner();
+                System.err.println("Введите корректную арифметическую операцию: (+, -, *, /) или команду (C — сброс, S — выход)");
             }
         }
     }
@@ -32,23 +32,7 @@ public class ConsoleInput {
         return OPERAND_PATTERN.matcher(operand).matches();
     }
 
-    private boolean isOperator(String operator){
+    private boolean isOperator(String operator) {
         return OPERATOR_PATTERN.matcher(operator).matches();
-    }
-
-    private void printOperatorInputErrorBanner(){
-        System.out.println("""
-            ╔══════════════════════════════════════════════════════════╗
-            ║  Введите корректную арифметическую операцию: +, -, *, /  ║
-            ╚══════════════════════════════════════════════════════════╝
-            """);
-    }
-
-    private void printOperandInputErrorBanner(){
-        System.out.println("""
-            ╔════════════════════════════╗
-            ║  Введите корректное число  ║
-            ╚════════════════════════════╝
-            """);
     }
 }
